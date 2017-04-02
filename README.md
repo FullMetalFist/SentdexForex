@@ -18,7 +18,8 @@ matplotlib: http://matplotlib.org
 
 To test, open a python shell and print these two lines:
 
-import numpy
-import matplotlib
+```>>>import numpy
+>>>import matplotlib
+```
 
 If there is no error/stacktrace, you were successful!
