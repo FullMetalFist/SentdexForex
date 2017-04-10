@@ -3,20 +3,26 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
 import matplotlib.dates as mdates
 import numpy as np
+import time
 
 date,bid,ask = np.loadtxt('GBPUSD1d.txt', unpack=True,
                         delimiter=',',
                         converters={0:mdates.strpdate2num('%Y%m%d%H%M%S')})
 
-def percentChange(startPoint, currentPoint):
-    return ((float(currentPoint)-startPoint)/startPoint)*100.00
+patternAR = []
+performanceAR = []
 
-def patternFinder():
+def percentChange(startPoint, currentPoint):
+    return ((float(currentPoint)-startPoint)/abs(startPoint))*100.00
+
+def patternStorage():
+    patStartTime = time.time()
     avgLine = ((bid+ask)/2)
     x = len(avgLine) - 30
 
     y = 11
     while y < x:
+        pattern = []
         p01 = percentChange(avgLine[y-10], avgLine[y-9])
         p02 = percentChange(avgLine[y-10], avgLine[y-8])
         p03 = percentChange(avgLine[y-10], avgLine[y-7])
@@ -31,13 +37,38 @@ def patternFinder():
         outcomeRange = avgLine[y+20:y+30]
         currentPoint = avgLine[y]
 
-        print reduce(lambda x, y: x+y, outcomeRange) / len(outcomeRange)
+        try:
+            avgOutcome = reduce(lambda x, y: x+y, outcomeRange) / len(outcomeRange)
+        except Exception, e:
+            print str(e)
+            avgOutcome = 0
+
+        futureOutcome = percentChange(currentPoint, avgOutcome)
+        pattern.append(p01)
+        pattern.append(p02)
+        pattern.append(p03)
+        pattern.append(p04)
+        pattern.append(p05)
+        pattern.append(p06)
+        pattern.append(p07)
+        pattern.append(p08)
+        pattern.append(p09)
+        pattern.append(p10)
+
+        patternAR.append(pattern)
+        performanceAR.append(futureOutcome)
+
         print currentPoint
         print '____'
 
         print p01, p02, p03, p04, p05, p06, p07, p08, p09, p10
         y+=1
-        timer.sleep(55)
+
+    patEndTime = time.time()
+
+    print len(patternAR)
+    print len(performanceAR)
+    print 'Pattern storage took ', patEndTime - patStartTime, ' seconds'
 
 def graphRawFX():
 
@@ -64,4 +95,4 @@ def graphRawFX():
     plt.show()
 
 #graphRawFX()
-patternFinder()
+patternStorage()
